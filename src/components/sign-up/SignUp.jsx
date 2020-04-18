@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+// redux
+import { connect } from "react-redux";
+// style
 import {
   Avatar,
   Button,
@@ -9,10 +12,73 @@ import {
   Container,
   Typography,
 } from "@material-ui/core";
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import { auth } from "../../firebase/firebaseUtils";
+// utils
+import {
+  isEmpty,
+  isPasswordMatch,
+  isEmailFormatValid,
+} from "../../utils/formValidation";
 
 class SignUp extends Component {
+  state = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  };
+
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordConfirmation,
+    } = this.state;
+    if (
+      !isEmpty([firstName, lastName, email, password, passwordConfirmation]) &&
+      isPasswordMatch(password, passwordConfirmation) &&
+      isEmailFormatValid(email)
+    ) {
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then((createdUser) => {
+          createdUser.user
+            .updateProfile({
+              displayName: firstName + lastName,
+            })
+            .then(() => {
+              console.log("user created");
+              this.setState({
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                passwordConfirmation: "",
+              })
+            }).catch((err) => console.log(err));;
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   render() {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordConfirmation,
+    } = this.state;
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -23,7 +89,7 @@ class SignUp extends Component {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <form className="form" noValidate>
+          <form className="form" noValidate onSubmit={this.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -35,6 +101,8 @@ class SignUp extends Component {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  onChange={this.handleChange}
+                  value={firstName}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -46,6 +114,8 @@ class SignUp extends Component {
                   label="Last Name"
                   name="lastName"
                   autoComplete="lname"
+                  onChange={this.handleChange}
+                  value={lastName}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -57,6 +127,8 @@ class SignUp extends Component {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={this.handleChange}
+                  value={email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -69,6 +141,22 @@ class SignUp extends Component {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  onChange={this.handleChange}
+                  value={password}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="passwordConfirmation"
+                  label="Confirm Password"
+                  type="password"
+                  id="passwordConfirmation"
+                  autoComplete="current-password"
+                  onChange={this.handleChange}
+                  value={passwordConfirmation}
                 />
               </Grid>
             </Grid>
@@ -95,4 +183,4 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+export default connect()(SignUp);
