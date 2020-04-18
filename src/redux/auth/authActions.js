@@ -3,12 +3,12 @@ import { auth } from "../../firebase/firebaseUtils";
 
 // for both signin and signup
 const userSignInUpSuccess = (user) => ({
-  type: authActionTypes.USER_SIGN_IN_SUCCESS,
+  type: authActionTypes.USER_SIGN_IN_UP_SUCCESS,
   payload: user,
 });
 
 const userSignInUpFailure = (error) => ({
-  type: authActionTypes.USER_SIGN_IN_FAILURE,
+  type: authActionTypes.USER_SIGN_IN_UP_FAILURE,
   payload: error,
 });
 
