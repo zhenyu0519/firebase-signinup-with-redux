@@ -11,9 +11,11 @@ import {
 } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import "./signIn.scss";
-import { auth } from "../../firebase/firebaseUtils";
 // utils
 import { isEmpty, isEmailFormatValid } from "../../utils/formValidation";
+// redux
+import { connect } from "react-redux";
+import { userSignIn } from "../../redux/auth/authActions";
 
 class SignIn extends Component {
   state = {
@@ -30,14 +32,10 @@ class SignIn extends Component {
     event.preventDefault();
     const { email, password } = this.state;
     if (!isEmpty([email, password]) && isEmailFormatValid(email)) {
-      auth
-        .signInWithEmailAndPassword(email, password)
-        .then((signedInUser) => {
-          console.log("SignedInUser is ", signedInUser);
-        })
-        .catch((err) => console.log(err));
+      this.props.userSignIn({ email, password });
     }
   };
+
   render() {
     const { email, password } = this.state;
     return (
@@ -109,4 +107,8 @@ class SignIn extends Component {
   }
 }
 
-export default SignIn;
+const mapDispatchToProps = (dispatch) => ({
+  userSignIn: (credential) => dispatch(userSignIn(credential)),
+});
+
+export default connect(null, mapDispatchToProps)(SignIn);

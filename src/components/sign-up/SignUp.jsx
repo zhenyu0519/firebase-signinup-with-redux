@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 // redux
 import { connect } from "react-redux";
+import { userSignUp } from "../../redux/auth/authActions";
 // style
 import {
   Avatar,
@@ -14,7 +15,6 @@ import {
 } from "@material-ui/core";
 import "./signUp.scss";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
-import { auth } from "../../firebase/firebaseUtils";
 // utils
 import {
   isEmpty,
@@ -50,26 +50,7 @@ class SignUp extends Component {
       isPasswordMatch(password, passwordConfirmation) &&
       isEmailFormatValid(email)
     ) {
-      auth
-        .createUserWithEmailAndPassword(email, password)
-        .then((createdUser) => {
-          createdUser.user
-            .updateProfile({
-              displayName: firstName + lastName,
-            })
-            .then(() => {
-              console.log("user created");
-              this.setState({
-                firstName: "",
-                lastName: "",
-                email: "",
-                password: "",
-                passwordConfirmation: "",
-              });
-            })
-            .catch((err) => console.log(err));
-        })
-        .catch((err) => console.log(err));
+      this.props.userSignUp({ email, password, firstName, lastName });
     }
   };
 
@@ -185,4 +166,8 @@ class SignUp extends Component {
   }
 }
 
-export default connect()(SignUp);
+const mapDispatch = (dispatch) => ({
+  userSignUp: (credential) => dispatch(userSignUp(credential)),
+});
+
+export default connect(null, mapDispatch)(SignUp);
