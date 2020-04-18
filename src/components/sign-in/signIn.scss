@@ -1,0 +1,41 @@
+.paper {
+    margin-top: 15vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .avatar {
+        background-color: #4c3c4c;
+        margin-bottom: 15px;
+    }
+
+    .form {
+        margin-top: 15px;
+        .submit {
+            margin: 15px 0;
+            background-color: #4c3c4c;
+            color: #eeeeee
+        }
+    }
+
+}
+
+// const useStyles = makeStyles((theme) => ({
+//     paper: {
+//       marginTop: theme.spacing(10),
+//       display: "flex",
+//       flexDirection: "column",
+//       alignItems: "center",
+//     },
+//     avatar: {
+//       margin: theme.spacing(1),
+//       backgroundColor: theme.palette.secondary.main,
+//     },
+//     form: {
+//       width: "100%", // Fix IE 11 issue.
+//       marginTop: theme.spacing(1),
+//     },
+//     submit: {
+//       margin: theme.spacing(3, 0, 2),
+//     },
+//   }));
