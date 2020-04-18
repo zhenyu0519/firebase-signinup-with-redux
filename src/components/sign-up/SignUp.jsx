@@ -12,6 +12,7 @@ import {
   Container,
   Typography,
 } from "@material-ui/core";
+import "./signUp.scss";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import { auth } from "../../firebase/firebaseUtils";
 // utils
@@ -64,8 +65,9 @@ class SignUp extends Component {
                 email: "",
                 password: "",
                 passwordConfirmation: "",
-              })
-            }).catch((err) => console.log(err));;
+              });
+            })
+            .catch((err) => console.log(err));
         })
         .catch((err) => console.log(err));
     }
