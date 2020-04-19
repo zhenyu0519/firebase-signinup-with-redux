@@ -6,9 +6,10 @@ import {
   Card,
   Typography,
   CardContent,
+  Button,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
-import { connect } from "react-redux";
+import { auth } from "../../firebase/firebaseUtils";
 
 const HomePage = ({ currentUser }) => {
   const { displayName, email } = currentUser;
@@ -28,10 +29,18 @@ const HomePage = ({ currentUser }) => {
             <Typography gutterBottom>{email}</Typography>
           </CardContent>
         </Card>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          className="submit"
+          onClick={() => auth.signOut()}
+        >
+          Sign Out
+        </Button>
       </div>
     </Container>
   );
 };
 
-const mapStateToProps = ({ auth: { currentUser } }) => ({ currentUser });
-export default connect(mapStateToProps)(HomePage);
+export default HomePage;

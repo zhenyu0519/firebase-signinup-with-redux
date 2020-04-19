@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-// redux
-import { connect } from "react-redux";
-import { userSignUp } from "../../redux/auth/authActions";
 // style
 import {
   Avatar,
@@ -21,6 +18,8 @@ import {
   isPasswordMatch,
   isEmailFormatValid,
 } from "../../utils/formValidation";
+// firebase
+import { auth, createUserProfileDocument } from "../../firebase/firebaseUtils";
 
 class SignUp extends Component {
   state = {
@@ -36,7 +35,7 @@ class SignUp extends Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
     const {
       firstName,
@@ -50,7 +49,23 @@ class SignUp extends Component {
       isPasswordMatch(password, passwordConfirmation) &&
       isEmailFormatValid(email)
     ) {
-      this.props.userSignUp({ email, password, firstName, lastName });
+      try {
+        const { user } = await auth.createUserWithEmailAndPassword(
+          email,
+          password
+        );
+        const displayName = firstName+' '+lastName
+        await createUserProfileDocument(user, { displayName });
+        this.setState({
+          firstName: "",
+          lastName:"",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -166,8 +181,4 @@ class SignUp extends Component {
   }
 }
 
-const mapDispatch = (dispatch) => ({
-  userSignUp: (credential) => dispatch(userSignUp(credential)),
-});
-
-export default connect(null, mapDispatch)(SignUp);
+export default SignUp;

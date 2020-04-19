@@ -13,9 +13,8 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import "./signIn.scss";
 // utils
 import { isEmpty, isEmailFormatValid } from "../../utils/formValidation";
-// redux
-import { connect } from "react-redux";
-import { userSignIn } from "../../redux/auth/authActions";
+// firbase
+import { signInWithGoogle, auth } from "../../firebase/firebaseUtils";
 
 class SignIn extends Component {
   state = {
@@ -28,11 +27,16 @@ class SignIn extends Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
     const { email, password } = this.state;
     if (!isEmpty([email, password]) && isEmailFormatValid(email)) {
-      this.props.userSignIn({ email, password });
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        this.setState({ email: "", password: "" });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -83,6 +87,15 @@ class SignIn extends Component {
             >
               Sign In
             </Button>
+            <Button
+              type="button"
+              fullWidth
+              variant="contained"
+              className="submit"
+              onClick={signInWithGoogle}
+            >
+              Sign In With Google
+            </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2" underline="none">
@@ -107,8 +120,4 @@ class SignIn extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  userSignIn: (credential) => dispatch(userSignIn(credential)),
-});
-
-export default connect(null, mapDispatchToProps)(SignIn);
+export default SignIn;
