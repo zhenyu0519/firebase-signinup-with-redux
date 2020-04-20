@@ -21,11 +21,12 @@ import {
   isPasswordMatch,
   isEmailFormatValid,
 } from "../../utils/formValidation";
+// route
+import { withRouter } from "react-router-dom";
 
 class SignUp extends Component {
   state = {
-    firstName: "",
-    lastName: "",
+    displayName: "",
     email: "",
     password: "",
     passwordConfirmation: "",
@@ -38,30 +39,18 @@ class SignUp extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      passwordConfirmation,
-    } = this.state;
+    const { displayName, email, password, passwordConfirmation } = this.state;
     if (
-      !isEmpty([firstName, lastName, email, password, passwordConfirmation]) &&
+      !isEmpty([displayName, email, password, passwordConfirmation]) &&
       isPasswordMatch(password, passwordConfirmation) &&
       isEmailFormatValid(email)
     ) {
-      this.props.userSignUp({ email, password, firstName, lastName });
+      this.props.userSignUp({ email, password, displayName });
     }
   };
 
   render() {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      passwordConfirmation,
-    } = this.state;
+    const { displayName, email, password, passwordConfirmation } = this.state;
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -74,31 +63,18 @@ class SignUp extends Component {
           </Typography>
           <form className="form" noValidate onSubmit={this.handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
-                  autoComplete="fname"
-                  name="firstName"
+                  autoComplete="displayName"
+                  name="displayName"
                   variant="outlined"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
+                  id="displayName"
+                  label="Display Name"
                   autoFocus
                   onChange={this.handleChange}
-                  value={firstName}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="lname"
-                  onChange={this.handleChange}
-                  value={lastName}
+                  value={displayName}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -154,7 +130,14 @@ class SignUp extends Component {
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="#" variant="body2" underline="none">
+                <Link
+                  href="#"
+                  variant="body2"
+                  underline="none"
+                  onClick={() => {
+                    this.props.history.push("/signin");
+                  }}
+                >
                   Already have an account? Sign in
                 </Link>
               </Grid>
@@ -170,4 +153,4 @@ const mapDispatch = (dispatch) => ({
   userSignUp: (credential) => dispatch(userSignUp(credential)),
 });
 
-export default connect(null, mapDispatch)(SignUp);
+export default withRouter(connect(null, mapDispatch)(SignUp));

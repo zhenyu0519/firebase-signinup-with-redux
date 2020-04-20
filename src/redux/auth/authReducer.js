@@ -8,12 +8,15 @@ const INIT_STATE = {
 
 const authReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
-    case authActionTypes.USER_SIGN_UP_START:
+    case authActionTypes.SET_CURRENT_USER:
       return {
         ...state,
-        isLoading: true,
+        currentUser: action.payload,
+        isLoading: false,
       };
+    case authActionTypes.USER_SIGN_UP_START:
     case authActionTypes.USER_SIGN_IN_START:
+    case authActionTypes.USER_SIGN_OUT_START:
       return {
         ...state,
         isLoading: true,
@@ -30,17 +33,16 @@ const authReducer = (state = INIT_STATE, action) => {
         errorMessage: action.payload,
         isLoading: false,
       };
-    case authActionTypes.USER_SIGN_OUT_START:
-      return {
-        ...state,
-      };
     case authActionTypes.USER_SIGN_OUT_SUCCESS:
       return {
         ...state,
+        isLoading: false,
       };
     case authActionTypes.USER_SIGN_OUT_FAILURE:
       return {
         ...state,
+        errorMessage: action.payload,
+        isLoading: false,
       };
 
     default:

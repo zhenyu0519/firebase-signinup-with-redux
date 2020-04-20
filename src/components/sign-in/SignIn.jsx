@@ -16,6 +16,8 @@ import { isEmpty, isEmailFormatValid } from "../../utils/formValidation";
 // redux
 import { connect } from "react-redux";
 import { userSignIn } from "../../redux/auth/authActions";
+// route
+import { withRouter } from "react-router-dom";
 
 class SignIn extends Component {
   state = {
@@ -95,6 +97,9 @@ class SignIn extends Component {
                   variant="body2"
                   underline="none"
                   color="secondary"
+                  onClick={() => {
+                    this.props.history.push("/signup");
+                  }}
                 >
                   {"Don't have an account? Sign Up"}
                 </Link>
@@ -111,4 +116,4 @@ const mapDispatchToProps = (dispatch) => ({
   userSignIn: (credential) => dispatch(userSignIn(credential)),
 });
 
-export default connect(null, mapDispatchToProps)(SignIn);
+export default withRouter(connect(null, mapDispatchToProps)(SignIn));

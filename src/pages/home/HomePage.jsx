@@ -6,11 +6,14 @@ import {
   Card,
   Typography,
   CardContent,
+  Button,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
+// redux
 import { connect } from "react-redux";
+import { userSignOut } from "../../redux/auth/authActions";
 
-const HomePage = ({ currentUser }) => {
+const HomePage = ({ currentUser, userSignOut }) => {
   const { displayName, email } = currentUser;
   return (
     <Container maxWidth="xs">
@@ -28,10 +31,23 @@ const HomePage = ({ currentUser }) => {
             <Typography gutterBottom>{email}</Typography>
           </CardContent>
         </Card>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className="submit"
+          onClick={userSignOut}
+        >
+          Sign Out
+        </Button>
       </div>
     </Container>
   );
 };
 
 const mapStateToProps = ({ auth: { currentUser } }) => ({ currentUser });
-export default connect(mapStateToProps)(HomePage);
+const mapDispatchToProps = (dispatch) => ({
+  userSignOut: () => dispatch(userSignOut()),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
