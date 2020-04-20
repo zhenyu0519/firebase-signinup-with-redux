@@ -1,5 +1,5 @@
 import { authActionTypes } from "./authTypes";
-import { auth, createUserProfileDocument } from "../../firebase/firebaseUtils";
+import { auth, createUserProfileDocument, googleProvider } from "../../firebase/firebaseUtils";
 
 // set current user for refresh session
 export const setCurrentUser = (userInfo) => {
@@ -8,7 +8,6 @@ export const setCurrentUser = (userInfo) => {
     payload: userInfo,
   };
 };
-
 // for both signin and signup
 const userSignInUpSuccess = (user) => ({
   type: authActionTypes.USER_SIGN_IN_UP_SUCCESS,
@@ -40,6 +39,20 @@ export const userSignIn = (credential) => async (dispatch) => {
     dispatch(userSignInUpFailure(error));
   }
 };
+
+// user sign in with google
+export const userSignInWithGoogle=()=>async (dispatch)=>{
+  dispatch(userSignInStart());
+  try {
+    const { user } = await auth.signInWithPopup(googleProvider)
+    const userRef = await createUserProfileDocument(user);
+    const snapShot = await userRef.get();
+    const { email, displayName } = snapShot.data();
+    dispatch(userSignInUpSuccess({ email, displayName }));
+  } catch (error) {
+    dispatch(userSignInUpFailure(error));
+  }
+}
 
 // user sign up
 const userSignUpStart = () => ({

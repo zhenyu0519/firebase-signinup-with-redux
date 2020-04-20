@@ -15,7 +15,7 @@ import "./signIn.scss";
 import { isEmpty, isEmailFormatValid } from "../../utils/formValidation";
 // redux
 import { connect } from "react-redux";
-import { userSignIn } from "../../redux/auth/authActions";
+import { userSignIn, userSignInWithGoogle } from "../../redux/auth/authActions";
 // route
 import { withRouter } from "react-router-dom";
 
@@ -40,6 +40,7 @@ class SignIn extends Component {
 
   render() {
     const { email, password } = this.state;
+    const { history, userSignInWithGoogle } = this.props;
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -85,6 +86,15 @@ class SignIn extends Component {
             >
               Sign In
             </Button>
+            <Button
+              type="button"
+              fullWidth
+              variant="contained"
+              className="submit"
+              onClick={userSignInWithGoogle}
+            >
+              Sign In With Google
+            </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2" underline="none">
@@ -98,7 +108,7 @@ class SignIn extends Component {
                   underline="none"
                   color="secondary"
                   onClick={() => {
-                    this.props.history.push("/signup");
+                    history.push("/signup");
                   }}
                 >
                   {"Don't have an account? Sign Up"}
@@ -114,6 +124,7 @@ class SignIn extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   userSignIn: (credential) => dispatch(userSignIn(credential)),
+  userSignInWithGoogle: () => dispatch(userSignInWithGoogle()),
 });
 
 export default withRouter(connect(null, mapDispatchToProps)(SignIn));
